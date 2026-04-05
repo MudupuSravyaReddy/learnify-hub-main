@@ -1,8 +1,32 @@
-import { Star, Users, Clock } from "lucide-react";
+import { Star, Users, Clock, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import type { Course } from "@/lib/courses";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "@/lib/auth";
 
 export default function CourseCard({ course, index = 0 }: { course: Course; index?: number }) {
+  const [isInCart, setIsInCart] = useState(false);
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
+  const handleAddToCart = () => {
+    setIsInCart(true);
+    // TODO: Implement actual cart logic
+    console.log(`Added ${course.title} to cart`);
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      // Redirect to login with return URL
+      navigate(`/login?redirect=/checkout&course=${course.id}`);
+    } else {
+      // Proceed to checkout
+      navigate(`/checkout?course=${course.id}`);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,9 +46,28 @@ export default function CourseCard({ course, index = 0 }: { course: Course; inde
           <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{course.students.toLocaleString()}</span>
           <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{course.duration}</span>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <span className="font-heading font-bold text-primary">${course.price}</span>
           <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">{course.level}</span>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-1 text-xs"
+            onClick={handleAddToCart}
+            disabled={isInCart}
+          >
+            <ShoppingCart className="h-3 w-3 mr-1" />
+            {isInCart ? "In Cart" : "Add to Cart"}
+          </Button>
+          <Button
+            size="sm"
+            className="flex-1 text-xs"
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </Button>
         </div>
       </div>
     </motion.div>
