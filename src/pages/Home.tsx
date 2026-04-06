@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpen, Award, Users, TrendingUp, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Award, Users, TrendingUp, Sparkles, Code, Database, Palette, Shield, Cloud, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/CourseCard";
 import { courses } from "@/lib/courses";
@@ -10,6 +10,45 @@ const stats = [
   { icon: Users, label: "Students", value: "50K+" },
   { icon: Award, label: "Certifications", value: "120+" },
   { icon: TrendingUp, label: "Success Rate", value: "95%" },
+];
+
+const categories = [
+  { 
+    name: "Development", 
+    icon: Code, 
+    color: "from-blue-500 to-cyan-600",
+    count: courses.filter(c => c.category === "Development").length
+  },
+  { 
+    name: "Data Science", 
+    icon: Database, 
+    color: "from-purple-500 to-pink-600",
+    count: courses.filter(c => c.category === "Data Science").length
+  },
+  { 
+    name: "Design", 
+    icon: Palette, 
+    color: "from-orange-500 to-red-600",
+    count: courses.filter(c => c.category === "Design").length
+  },
+  { 
+    name: "Security", 
+    icon: Shield, 
+    color: "from-green-500 to-emerald-600",
+    count: courses.filter(c => c.category === "Security").length
+  },
+  { 
+    name: "Cloud", 
+    icon: Cloud, 
+    color: "from-indigo-500 to-purple-600",
+    count: courses.filter(c => c.category === "Cloud").length
+  },
+  { 
+    name: "Marketing", 
+    icon: Megaphone, 
+    color: "from-pink-500 to-rose-600",
+    count: courses.filter(c => c.category === "Marketing").length
+  },
 ];
 
 const banners = [
@@ -74,6 +113,45 @@ export default function Home() {
               </Button>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="container py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-heading font-bold mb-3">Explore <span className="gradient-text">Categories</span></h2>
+          <p className="text-muted-foreground max-w-md mx-auto">Find courses by category and start your learning journey.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category, index) => (
+            <motion.div
+              key={category.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index }}
+              className="group"
+            >
+              <Link 
+                to={`/courses?category=${encodeURIComponent(category.name)}`}
+                className="block h-full"
+              >
+                <div className={`h-full p-6 rounded-xl bg-gradient-to-br ${category.color} text-white relative overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:scale-105`}>
+                  <div className="relative z-10">
+                    <category.icon className="h-12 w-12 mb-4 opacity-80" />
+                    <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                    <p className="text-sm opacity-90 mb-4">{category.count} courses available</p>
+                    <div className="flex items-center text-sm font-medium">
+                      <span>Explore</span>
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                  <div className="absolute -right-4 -bottom-4 opacity-10">
+                    <category.icon className="h-32 w-32" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </section>
 
