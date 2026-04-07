@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import AuthLayout from "@/components/AuthLayout";
@@ -12,6 +12,8 @@ export default function Login() {
   const [remember, setRemember] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const redirectUrl = params.get("redirect");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,13 @@ export default function Login() {
     const { password: _, ...safe } = user;
     setCurrentUser(safe);
     toast.success(`Welcome back, ${user.firstName}!`);
-    navigate("/");
+    
+    // Redirect to intended page or default to home
+    if (redirectUrl) {
+      navigate(redirectUrl + (params.get("course") ? `?course=${params.get("course")}` : ""));
+    } else {
+      navigate("/");
+    }
   };
 
   return (
